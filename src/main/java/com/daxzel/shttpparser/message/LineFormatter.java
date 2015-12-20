@@ -1,7 +1,7 @@
 package com.daxzel.shttpparser.message;
 
 
-import com.daxzel.shttpparser.ProtocolVersion;
+import com.daxzel.shttpparser.util.ProtocolVersion;
 import com.daxzel.shttpparser.util.CharArrayBuffer;
 
 /**

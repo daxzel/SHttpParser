@@ -1,7 +1,7 @@
 package com.daxzel.shttpparser.message;
 
 
-import com.daxzel.shttpparser.ProtocolVersion;
+import com.daxzel.shttpparser.util.ProtocolVersion;
 
 /**
  * The first line of a Response message is the Status-Line, consisting

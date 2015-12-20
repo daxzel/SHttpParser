@@ -1,4 +1,4 @@
-package com.daxzel.shttpparser;
+package com.daxzel.shttpparser.util;
 
 
 import java.io.Serializable;

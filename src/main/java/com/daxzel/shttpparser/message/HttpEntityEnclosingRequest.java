@@ -1,43 +1,34 @@
 package com.daxzel.shttpparser.message;
 
-import com.daxzel.shttpparser.ProtocolVersion;
-
 /**
- * Created by Tsarevskiy
+ * A request with an entity.
+ *
+ * @since 4.0
  */
-public class HttpEntityEnclosingRequest
-        extends BasicHttpRequest {
+public interface HttpEntityEnclosingRequest extends HttpRequest {
 
-    private HttpEntity entity;
+    /**
+     * Tells if this request should use the expect-continue handshake.
+     * The expect continue handshake gives the server a chance to decide
+     * whether to accept the entity enclosing request before the possibly
+     * lengthy entity is sent across the wire.
+     * @return true if the expect continue handshake should be used, false if
+     * not.
+     */
+    boolean expectContinue();
 
-    public BasicHttpEntityEnclosingRequest(final String method, final String uri) {
-        super(method, uri);
-    }
+    /**
+     * Associates the entity with this request.
+     *
+     * @param entity the entity to send.
+     */
+    void setEntity(HttpEntity entity);
 
-    public BasicHttpEntityEnclosingRequest(final String method, final String uri,
-                                           final ProtocolVersion ver) {
-        super(method, uri, ver);
-    }
-
-    public BasicHttpEntityEnclosingRequest(final RequestLine requestline) {
-        super(requestline);
-    }
-
-    @Override
-    public HttpEntity getEntity() {
-        return this.entity;
-    }
-
-    @Override
-    public void setEntity(final HttpEntity entity) {
-        this.entity = entity;
-    }
-
-    @Override
-    public boolean expectContinue() {
-        final Header expect = getFirstHeader(HTTP.EXPECT_DIRECTIVE);
-        return expect != null && HTTP.EXPECT_CONTINUE.equalsIgnoreCase(expect.getValue());
-    }
+    /**
+     * Returns the entity associated with this request.
+     *
+     * @return entity
+     */
+    HttpEntity getEntity();
 
 }
-

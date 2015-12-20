@@ -1,6 +1,6 @@
 package com.daxzel.shttpparser.message;
 
-import com.daxzel.shttpparser.ProtocolVersion;
+import com.daxzel.shttpparser.util.ProtocolVersion;
 
 /**
  * The Request-Line begins with a method token, followed by the
