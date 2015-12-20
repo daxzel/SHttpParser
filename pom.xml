@@ -6,7 +6,17 @@
 
     <groupId>com.daxzel</groupId>
     <artifactId>shttpparser</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
+
+    <license>
+        <name>Apache License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <distribution>repo</distribution>
+    </license>
+
+    <scm>
+        <url>https://github.com/daxzel/SimplestHttpParser</url>
+    </scm>
 
 
 </project>
