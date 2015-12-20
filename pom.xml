@@ -4,15 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>SHttpParser</name>
+    <description>The simplest library for http messages parsing</description>
+    <url>https://github.com/daxzel/SimplestHttpParser</url>
+
     <groupId>com.daxzel</groupId>
     <artifactId>shttpparser</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-    <license>
-        <name>Apache License, Version 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        <distribution>repo</distribution>
-    </license>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <scm>
         <url>https://github.com/daxzel/SimplestHttpParser</url>
