@@ -38,12 +38,6 @@ package com.daxzel.shttpparser.config;
 @Deprecated
 public interface CoreProtocolPNames {
 
-    /**
-     * Defines the {@link org.apache.http.ProtocolVersion} used per default.
-     * <p>
-     * This parameter expects a value of type {@link org.apache.http.ProtocolVersion}.
-     * </p>
-     */
     public static final String PROTOCOL_VERSION = "http.protocol.version";
 
     /**

@@ -31,37 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * An entity that can be sent or received with an HTTP message.
- * Entities can be found in some
- * {@link HttpEntityEnclosingRequest requests} and in
- * {@link HttpResponse responses}, where they are optional.
- * <p>
- * There are three distinct types of entities in HttpCore,
- * depending on where their {@link #getContent content} originates:
- * <ul>
- * <li><b>streamed</b>: The content is received from a stream, or
- *     generated on the fly. In particular, this category includes
- *     entities being received from a {@link HttpConnection connection}.
- *     {@link #isStreaming Streamed} entities are generally not
- *      {@link #isRepeatable repeatable}.
- *     </li>
- * <li><b>self-contained</b>: The content is in memory or obtained by
- *     means that are independent from a connection or other entity.
- *     Self-contained entities are generally {@link #isRepeatable repeatable}.
- *     </li>
- * <li><b>wrapping</b>: The content is obtained from another entity.
- *     </li>
- * </ul>
- * This distinction is important for connection management with incoming
- * entities. For entities that are created by an application and only sent
- * using the HTTP components framework, the difference between streamed
- * and self-contained is of little importance. In that case, it is suggested
- * to consider non-repeatable entities as streamed, and those that are
- * repeatable (without a huge effort) as self-contained.
- *
- * @since 4.0
- */
 public interface HttpEntity {
 
     /**
@@ -169,30 +138,6 @@ public interface HttpEntity {
      */
     boolean isStreaming(); // don't expect an exception here
 
-    /**
-     * This method is deprecated since version 4.1. Please use standard
-     * java convention to ensure resource deallocation by calling
-     * {@link InputStream#close()} on the input stream returned by
-     * {@link #getContent()}
-     * <p>
-     * This method is called to indicate that the content of this entity
-     * is no longer required. All entity implementations are expected to
-     * release all allocated resources as a result of this method
-     * invocation. Content streaming entities are also expected to
-     * dispose of the remaining content, if any. Wrapping entities should
-     * delegate this call to the wrapped entity.
-     * <p>
-     * This method is of particular importance for entities being
-     * received from a {@link HttpConnection connection}. The entity
-     * needs to be consumed completely in order to re-use the connection
-     * with keep-alive.
-     *
-     * @throws IOException if an I/O error occurs.
-     *
-     * @deprecated (4.1) Use {@link org.apache.http.util.EntityUtils#consume(HttpEntity)}
-     *
-     * @see #getContent() and #writeTo(OutputStream)
-     */
     @Deprecated
     void consumeContent() throws IOException;
 
