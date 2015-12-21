@@ -29,9 +29,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com:daxzel/SHttpParser.git</connection>
-        <developerConnection>scm:git:git://github.com:daxzel/SHttpParser.git</developerConnection>
-        <url>git://github.com:daxzel/SHttpParser.git</url>
+        <connection>scm:git:https://github.com/daxzel/SHttpParser.git</connection>
+        <developerConnection>scm:git:https://github.com/daxzel/SHttpParser.git</developerConnection>
+        <url>https://github.com/daxzel/SHttpParser.git</url>
       <tag>first</tag>
   </scm>
 
