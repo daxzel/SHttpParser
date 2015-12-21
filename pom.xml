@@ -9,7 +9,7 @@
 
     <groupId>com.daxzel</groupId>
     <artifactId>shttpparser</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -46,7 +46,6 @@
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
-                    <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
             <plugin>
