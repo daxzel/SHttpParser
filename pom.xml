@@ -8,7 +8,7 @@
 
     <groupId>com.daxzel</groupId>
     <artifactId>shttpparser</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <distributionManagement>
@@ -44,7 +44,7 @@
         <connection>scm:git:https://github.com/daxzel/SHttpParser.git</connection>
         <developerConnection>scm:git:https://github.com/daxzel/SHttpParser.git</developerConnection>
         <url>https://github.com/daxzel/SHttpParser.git</url>
-      <tag>first</tag>
+      <tag>shttpparser-0.2</tag>
   </scm>
 
     <build>
