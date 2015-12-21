@@ -21,9 +21,50 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Andrey Tsarevskiy</name>
+            <email>andreytsarevskiy@gmail.com</email>
+            <organization>Thesis Best Practices</organization>
+            <organizationUrl>https://github.com/ThesisBestPractices</organizationUrl>
+        </developer>
+    </developers>
+
     <scm>
-        <url>https://github.com/daxzel/SimplestHttpParser</url>
+        <connection>scm:git:git@github.com:daxzel/SHttpParser.git</connection>
+        <developerConnection>scm:git:git@github.com:daxzel/SHttpParser.git</developerConnection>
+        <url>git@github.com:daxzel/SHttpParser.git</url>
     </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
