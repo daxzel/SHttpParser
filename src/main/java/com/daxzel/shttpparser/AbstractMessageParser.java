@@ -35,14 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Abstract base class for HTTP message parsers that obtain input from
- * an instance of {@link SessionInputBuffer}.
- *
- * @since 4.0
- * <p/>
- * NotThreadSafe
- */
 @SuppressWarnings("deprecation")
 public abstract class AbstractMessageParser<T extends HttpMessage> implements HttpMessageParser<T> {
 
