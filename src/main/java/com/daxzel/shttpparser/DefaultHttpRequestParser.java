@@ -46,7 +46,6 @@ public class DefaultHttpRequestParser extends AbstractMessageParser<HttpRequest>
 
     private final HttpRequestFactory requestFactory;
     private final CharArrayBuffer lineBuf;
-    private final EntityDeserializer entitydeserializer = new EntityDeserializer();
 
     /**
      * Creates an instance of this class.
@@ -111,12 +110,8 @@ public class DefaultHttpRequestParser extends AbstractMessageParser<HttpRequest>
         }
         final ParserCursor cursor = new ParserCursor(0, this.lineBuf.length());
         final RequestLine requestline = this.lineParser.parseRequestLine(this.lineBuf, cursor);
-        HttpRequest request = this.requestFactory.newHttpRequest(requestline);
-        if (request instanceof HttpEntityEnclosingRequest) {
-            final HttpEntity entity = this.entitydeserializer.deserialize(sessionBuffer, request);
-            ((HttpEntityEnclosingRequest) request).setEntity(entity);
-        }
-        return request;
+
+        return this.requestFactory.newHttpRequest(requestline);
     }
 
 }

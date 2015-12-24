@@ -40,21 +40,22 @@ import java.util.List;
  * an instance of {@link SessionInputBuffer}.
  *
  * @since 4.0
- *
+ * <p/>
  * NotThreadSafe
  */
 @SuppressWarnings("deprecation")
 public abstract class AbstractMessageParser<T extends HttpMessage> implements HttpMessageParser<T> {
 
-    private static final int HEAD_LINE    = 0;
-    private static final int HEADERS      = 1;
+    private static final int HEAD_LINE = 0;
+    private static final int HEADERS = 1;
 
     private final SessionInputBuffer sessionBuffer;
     private final MessageConstraints messageConstraints;
     private final List<CharArrayBuffer> headerLines;
     protected final LineParser lineParser;
 
-    private int state;
+    private final EntityDeserializer entitydeserializer = new EntityDeserializer();
+
     private T message;
 
     /**
@@ -63,9 +64,8 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
      * @param buffer the session input buffer.
      * @param parser the line parser.
      * @param params HTTP parameters.
-     *
      * @deprecated (4.3) use {@link AbstractMessageParser#AbstractMessageParser(SessionInputBuffer,
-     *   LineParser, MessageConstraints)}
+     * LineParser, MessageConstraints)}
      */
     @Deprecated
     public AbstractMessageParser(
@@ -77,18 +77,16 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
         this.messageConstraints = HttpParamConfig.getMessageConstraints(params);
         this.lineParser = (parser != null) ? parser : BasicLineParser.INSTANCE;
         this.headerLines = new ArrayList<CharArrayBuffer>();
-        this.state = HEAD_LINE;
     }
 
     /**
      * Creates new instance of AbstractMessageParser.
      *
-     * @param buffer the session input buffer.
-     * @param lineParser the line parser. If {@code null} {@link BasicLineParser#INSTANCE}
-     *   will be used.
+     * @param buffer      the session input buffer.
+     * @param lineParser  the line parser. If {@code null} {@link BasicLineParser#INSTANCE}
+     *                    will be used.
      * @param constraints the message constraints. If {@code null}
-     *   {@link MessageConstraints#DEFAULT} will be used.
-     *
+     *                    {@link MessageConstraints#DEFAULT} will be used.
      * @since 4.3
      */
     public AbstractMessageParser(
@@ -100,26 +98,24 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
         this.lineParser = lineParser != null ? lineParser : BasicLineParser.INSTANCE;
         this.messageConstraints = constraints != null ? constraints : MessageConstraints.DEFAULT;
         this.headerLines = new ArrayList<CharArrayBuffer>();
-        this.state = HEAD_LINE;
     }
 
     /**
      * Parses HTTP headers from the data receiver stream according to the generic
      * format as given in Section 3.1 of RFC 822, RFC-2616 Section 4 and 19.3.
      *
-     * @param inbuffer Session input buffer
+     * @param inbuffer       Session input buffer
      * @param maxHeaderCount maximum number of headers allowed. If the number
-     *  of headers received from the data stream exceeds maxCount value, an
-     *  IOException will be thrown. Setting this parameter to a negative value
-     *  or zero will disable the check.
-     * @param maxLineLen maximum number of characters for a header line,
-     *  including the continuation lines. Setting this parameter to a negative
-     *  value or zero will disable the check.
+     *                       of headers received from the data stream exceeds maxCount value, an
+     *                       IOException will be thrown. Setting this parameter to a negative value
+     *                       or zero will disable the check.
+     * @param maxLineLen     maximum number of characters for a header line,
+     *                       including the continuation lines. Setting this parameter to a negative
+     *                       value or zero will disable the check.
+     * @param parser         line parser to use. Can be {@code null}, in which case
+     *                       the default implementation of this interface will be used.
      * @return array of HTTP headers
-     * @param parser line parser to use. Can be {@code null}, in which case
-     *  the default implementation of this interface will be used.
-     *
-     * @throws IOException in case of an I/O error
+     * @throws IOException   in case of an I/O error
      * @throws HttpException in case of HTTP protocol violation
      */
     public static Header[] parseHeaders(
@@ -137,24 +133,21 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
      * Parses HTTP headers from the data receiver stream according to the generic
      * format as given in Section 3.1 of RFC 822, RFC-2616 Section 4 and 19.3.
      *
-     * @param inbuffer Session input buffer
+     * @param inbuffer       Session input buffer
      * @param maxHeaderCount maximum number of headers allowed. If the number
-     *  of headers received from the data stream exceeds maxCount value, an
-     *  IOException will be thrown. Setting this parameter to a negative value
-     *  or zero will disable the check.
-     * @param maxLineLen maximum number of characters for a header line,
-     *  including the continuation lines. Setting this parameter to a negative
-     *  value or zero will disable the check.
-     * @param parser line parser to use.
-     * @param headerLines List of header lines. This list will be used to store
-     *   intermediate results. This makes it possible to resume parsing of
-     *   headers in case of a {@link java.io.InterruptedIOException}.
-     *
+     *                       of headers received from the data stream exceeds maxCount value, an
+     *                       IOException will be thrown. Setting this parameter to a negative value
+     *                       or zero will disable the check.
+     * @param maxLineLen     maximum number of characters for a header line,
+     *                       including the continuation lines. Setting this parameter to a negative
+     *                       value or zero will disable the check.
+     * @param parser         line parser to use.
+     * @param headerLines    List of header lines. This list will be used to store
+     *                       intermediate results. This makes it possible to resume parsing of
+     *                       headers in case of a {@link java.io.InterruptedIOException}.
      * @return array of HTTP headers
-     *
-     * @throws IOException in case of an I/O error
+     * @throws IOException   in case of an I/O error
      * @throws HttpException in case of HTTP protocol violation
-     *
      * @since 4.1
      */
     public static Header[] parseHeaders(
@@ -165,7 +158,7 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
             final List<CharArrayBuffer> headerLines) throws HttpException, IOException {
         CharArrayBuffer current = null;
         CharArrayBuffer previous = null;
-        for (;;) {
+        for (; ; ) {
             if (current == null) {
                 current = new CharArrayBuffer(64);
             } else {
@@ -179,6 +172,10 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
             // Check for folded headers first
             // Detect LWS-char see HTTP/1.0 or HTTP/1.1 Section 2.2
             // discussion on folded headers
+            if (current.charAt(0) == ' ' && (current.length() == 1)) {
+                break;
+            }
+
             if ((current.charAt(0) == ' ' || current.charAt(0) == '\t') && previous != null) {
                 // we have continuation folded header
                 // so append value
@@ -220,47 +217,41 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
     /**
      * Subclasses must override this method to generate an instance of
      * {@link HttpMessage} based on the initial input from the session buffer.
-     * <p>
+     * <p/>
      * Usually this method is expected to read just the very first line or
      * the very first valid from the data stream and based on the input generate
      * an appropriate instance of {@link HttpMessage}.
      *
      * @param sessionBuffer the session input buffer.
      * @return HTTP message based on the input from the session buffer.
-     * @throws IOException in case of an I/O error.
-     * @throws HttpException in case of HTTP protocol violation.
+     * @throws IOException    in case of an I/O error.
+     * @throws HttpException  in case of HTTP protocol violation.
      * @throws ParseException in case of a parse error.
      */
     protected abstract T parseHead(SessionInputBuffer sessionBuffer)
             throws IOException, HttpException, ParseException;
 
     public T parse() throws IOException, HttpException {
-        final int st = this.state;
-        switch (st) {
-            case HEAD_LINE:
-                try {
-                    this.message = parseHead(this.sessionBuffer);
-                } catch (final ParseException px) {
-                    throw new ProtocolException(px.getMessage(), px);
-                }
-                this.state = HEADERS;
-                //$FALL-THROUGH$
-            case HEADERS:
-                final Header[] headers = AbstractMessageParser.parseHeaders(
-                        this.sessionBuffer,
-                        this.messageConstraints.getMaxHeaderCount(),
-                        this.messageConstraints.getMaxLineLength(),
-                        this.lineParser,
-                        this.headerLines);
-                this.message.setHeaders(headers);
-                final T result = this.message;
-                this.message = null;
-                this.headerLines.clear();
-                this.state = HEAD_LINE;
-                return result;
-            default:
-                throw new IllegalStateException("Inconsistent parser state");
+        try {
+            this.message = parseHead(this.sessionBuffer);
+        } catch (final ParseException px) {
+            throw new ProtocolException(px.getMessage(), px);
         }
+        final Header[] headers = AbstractMessageParser.parseHeaders(
+                this.sessionBuffer,
+                this.messageConstraints.getMaxHeaderCount(),
+                this.messageConstraints.getMaxLineLength(),
+                this.lineParser,
+                this.headerLines);
+        this.message.setHeaders(headers);
+        final T result = this.message;
+        if (message instanceof HttpEntityEnclosingRequest) {
+            final HttpEntity entity = this.entitydeserializer.deserialize(sessionBuffer, message);
+            ((HttpEntityEnclosingRequest) message).setEntity(entity);
+        }
+        this.message = null;
+        this.headerLines.clear();
+        return result;
     }
 
 }
