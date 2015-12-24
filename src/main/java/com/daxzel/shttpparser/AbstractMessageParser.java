@@ -214,20 +214,6 @@ public abstract class AbstractMessageParser<T extends HttpMessage> implements Ht
         return headers;
     }
 
-    /**
-     * Subclasses must override this method to generate an instance of
-     * {@link HttpMessage} based on the initial input from the session buffer.
-     * <p/>
-     * Usually this method is expected to read just the very first line or
-     * the very first valid from the data stream and based on the input generate
-     * an appropriate instance of {@link HttpMessage}.
-     *
-     * @param sessionBuffer the session input buffer.
-     * @return HTTP message based on the input from the session buffer.
-     * @throws IOException    in case of an I/O error.
-     * @throws HttpException  in case of HTTP protocol violation.
-     * @throws ParseException in case of a parse error.
-     */
     protected abstract T parseHead(SessionInputBuffer sessionBuffer)
             throws IOException, HttpException, ParseException;
 
